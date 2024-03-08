@@ -22,6 +22,10 @@ module Playwright
       @on_driver_crashed = block
     end
 
+    def on_driver_closed(&block)
+      @on_driver_closed = block
+    end
+    
     class AlreadyDisconnectedError < StandardError ; end
 
     # @param message [Hash]

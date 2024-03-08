@@ -18,6 +18,11 @@ module Playwright
     def on_driver_crashed(&block)
       @on_driver_crashed = block
     end
+    
+    def on_driver_closed(&block)
+      @on_driver_closed = block
+    end
+    
 
     class AlreadyDisconnectedError < StandardError ; end
 
@@ -79,6 +84,9 @@ module Playwright
       @ws.on_error do |error|
         puts "[WebSocketTransport] error: #{error}"
         @on_driver_crashed&.call
+      end
+      @ws.on_close do |close|
+        @on_driver_closed&.call
       end
     rescue Errno::ECONNREFUSED => err
       raise WebSocketClient::TransportError.new(err)

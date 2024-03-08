@@ -16,6 +16,11 @@ module Playwright
         end
         raise ::Playwright::DriverCrashedError.new
       end
+      @transport.on_driver_closed do
+        @callbacks.each_value do |callback|
+          callback.reject("Driver Closed") unless callback.resolved?
+        end
+      end
 
       @objects = {} # Hash[ guid => ChannelOwner ]
       @waiting_for_object = {} # Hash[ guid => Promise<ChannelOwner> ]
